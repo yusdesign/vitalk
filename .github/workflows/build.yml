@@ -30,29 +30,43 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Capacitor Android
-        run: npm install @capacitor/android@6
-
-      - name: Install Capacitor CLI
+      - name: Install Capacitor CLI globally
         run: npm install -g @capacitor/cli@6
-
-      - name: Add Android platform
-        run: cap add android
 
       - name: Build web assets
         run: npm run build
 
-      - name: Sync Capacitor (copies assets to Android)
-        run: npx cap sync android
+      - name: Add Android platform
+        run: cap add android
 
-      - name: Build APK (Free)
+      - name: Sync Capacitor
+        run: cap sync android
+
+      - name: Generate Keystore
+        run: |
+          keytool -genkey -v -keystore vitalk.keystore \
+            -alias vitalk \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass vitalk123 -keypass vitalk123 \
+            -dname "CN=Vitalk, OU=Dev, O=Unknown, L=Unknown, ST=Unknown, C=RU"
+
+      - name: Build APK (Release)
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Upload Free APK
+      - name: Sign APK
+        run: |
+          cd android/app/build/outputs/apk/release
+          apksigner sign --ks ../../../../../vitalk.keystore \
+            --ks-pass pass:vitalk123 \
+            --key-pass pass:vitalk123 \
+            app-release-unsigned.apk
+          mv app-release-unsigned.apk Vitalk-signed.apk
+
+      - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: Vitalk-Free
-          path: android/app/build/outputs/apk/release/*.apk
+          name: Vitalk-Free-Signed
+          path: android/app/build/outputs/apk/release/Vitalk-signed.apk
