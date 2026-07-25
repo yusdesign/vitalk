@@ -33,13 +33,13 @@ jobs:
       - name: Install Capacitor Android
         run: npm install @capacitor/android@6
 
-      - name: Build web assets
-        run: npm run build
-
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Sync Capacitor
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor (copies assets to Android)
         run: npx cap sync android
 
       - name: Build APK (Free)
