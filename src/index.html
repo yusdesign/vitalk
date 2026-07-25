@@ -8,13 +8,11 @@
 </head>
 <body>
   <div id="app">
-    <!-- Header with settings gear -->
     <header>
       <h1>🧠 Vitalk</h1>
       <button id="settings-btn" aria-label="Settings">⚙️</button>
     </header>
 
-    <!-- Main Stats (Sterile) -->
     <main>
       <section id="today">
         <div class="stat-grid">
@@ -37,11 +35,11 @@
     </main>
 
     <footer>
-      <p>🔒 No internet • No tracking</p>
+      <p>🔒 No internet • No tracking • Your words, your device</p>
     </footer>
   </div>
 
-  <!-- Settings Drawer (hidden by default) -->
+  <!-- Settings Drawer -->
   <div id="settings-overlay" class="hidden">
     <div id="settings-drawer">
       <div class="drawer-header">
@@ -49,22 +47,64 @@
         <button id="close-settings" aria-label="Close settings">✕</button>
       </div>
       <div class="drawer-body">
+
+        <!-- Wordlist Source -->
         <div class="pref-group">
-          <label for="wordlist-path">📁 Wordlist Source</label>
-          <p id="wordlist-path">Not loaded</p>
+          <label>📁 Wordlist Source</label>
+          <p id="wordlist-path" class="mono">Not loaded</p>
+          <p id="lexica-status">🔍 Checking...</p>
           <button id="browse-wordlist">Browse</button>
+          <button id="check-lexica" class="primary">🔍 Check Lexica</button>
         </div>
+
+        <!-- Stats -->
         <div class="pref-group">
           <label>📊 Stats</label>
           <p>Total words: <span id="pref-total">0</span></p>
           <p>Unique words: <span id="pref-unique">0</span></p>
           <p>Longest word: <span id="pref-longest">—</span></p>
         </div>
+
+        <!-- Debug Console -->
+        <div class="pref-group">
+          <label>🐞 Debug Log</label>
+          <div id="debug-console">
+            <div class="log-entry"><span class="log-time">⏱️</span> <span class="log-info">Vitalk started</span></div>
+          </div>
+          <button id="clear-debug">Clear Log</button>
+        </div>
+
+        <!-- Help / Surfeit -->
+        <div class="pref-group">
+          <label>🆘 Help & Surfeit</label>
+          <p style="font-size:0.85rem; opacity:0.7; line-height:1.5;">
+            <strong>📍 Lexica wordlist path:</strong><br>
+            <span class="mono">/Android/data/com.lexica.app/files/wordlist_user.txt</span>
+          </p>
+          <p style="font-size:0.85rem; opacity:0.7; line-height:1.5; margin-top:0.5rem;">
+            <strong>🔧 If no stats appear:</strong><br>
+            1. Make sure Lexica is installed<br>
+            2. Tap "Check Lexica" above<br>
+            3. Use "Browse" to select the file manually
+          </p>
+          <p style="font-size:0.85rem; opacity:0.7; line-height:1.5; margin-top:0.5rem;">
+            <strong>📈 Surfeit (excess):</strong><br>
+            Total words beyond milestones = 
+            <span id="surfeit-count">0</span>
+          </p>
+          <p style="font-size:0.75rem; opacity:0.4; margin-top:0.5rem;">
+            Vitalk v1.0 — Built for cognitive clarity
+          </p>
+        </div>
+
+        <!-- Privacy -->
         <div class="pref-group">
           <label>🔒 Privacy</label>
-          <p>No data leaves your device</p>
-          <p>No internet permission</p>
+          <p>✓ No data leaves your device</p>
+          <p>✓ No internet permission</p>
+          <p>✓ No analytics</p>
         </div>
+
       </div>
     </div>
   </div>
