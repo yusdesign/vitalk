@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitalk</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>🧠 Vitalk</h1>
+      <span class="badge">FREE</span>
+    </header>
+
+    <main>
+      <section id="today">
+        <h2>Today</h2>
+        <div class="stat-grid">
+          <div class="stat"><span class="value" id="words-today">—</span><label>Words</label></div>
+          <div class="stat"><span class="value" id="streak">—</span><label>Streak</label></div>
+          <div class="stat"><span class="value" id="total">—</span><label>Total</label></div>
+          <div class="stat"><span class="value" id="longest">—</span><label>Longest</label></div>
+        </div>
+      </section>
+
+      <section id="milestones">
+        <h2>🏆 Milestones</h2>
+        <ul id="milestone-list"></ul>
+      </section>
+
+      <section id="lengths">
+        <h2>📊 Word Lengths</h2>
+        <div id="length-bars"></div>
+      </section>
+
+      <section id="export">
+        <h2>💾 Backup</h2>
+        <button id="export-btn">Export JSON</button>
+        <button id="import-btn">Import JSON</button>
+      </section>
+
+      <footer>
+        <p>🔒 No internet • No tracking • Your words, your device</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>

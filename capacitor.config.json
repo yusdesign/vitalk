@@ -1,0 +1,13 @@
+{
+  "appId": "com.vitalk.free",
+  "appName": "Vitalk",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": true,
+    "minSdkVersion": 26,
+    "targetSdkVersion": 35
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
