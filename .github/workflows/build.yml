@@ -50,23 +50,36 @@ jobs:
             -storepass vitalk123 -keypass vitalk123 \
             -dname "CN=Vitalk, OU=Dev, O=Unknown, L=Unknown, ST=Unknown, C=RU"
 
-      - name: Build APK (Release)
+      - name: Patch build.gradle with signing config
+        run: |
+          cat << 'EOF' >> android/app/build.gradle
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('../../../vitalk.keystore')
+                      storePassword 'vitalk123'
+                      keyAlias 'vitalk'
+                      keyPassword 'vitalk123'
+                      v1SigningEnabled true
+                      v2SigningEnabled true
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          EOF
+
+      - name: Build and Sign APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Sign APK
-        run: |
-          cd android/app/build/outputs/apk/release
-          apksigner sign --ks ../../../../../vitalk.keystore \
-            --ks-pass pass:vitalk123 \
-            --key-pass pass:vitalk123 \
-            app-release-unsigned.apk
-          mv app-release-unsigned.apk Vitalk-signed.apk
-
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: Vitalk-Free-Signed
-          path: android/app/build/outputs/apk/release/Vitalk-signed.apk
+          path: android/app/build/outputs/apk/release/*.apk
