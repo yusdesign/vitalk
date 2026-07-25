@@ -8,9 +8,16 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: path.resolve(__dirname, 'src/index.html'),
+      external: [
+        '@capacitor/filesystem',
+        '@capacitor/core'
+      ]
     },
   },
   server: {
     port: 3000,
   },
+  optimizeDeps: {
+    exclude: ['@capacitor/filesystem', '@capacitor/core']
+  }
 });
