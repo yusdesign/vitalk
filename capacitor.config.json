@@ -2,6 +2,7 @@
   "appId": "com.vitalk.free",
   "appName": "Vitalk",
   "webDir": "dist",
+  "bundledWebRuntime": false,
   "android": {
     "allowMixedContent": true,
     "minSdkVersion": 26,

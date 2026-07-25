@@ -33,8 +33,11 @@ jobs:
       - name: Install Capacitor Android
         run: npm install @capacitor/android@6
 
+      - name: Install Capacitor CLI
+        run: npm install -g @capacitor/cli@6
+
       - name: Add Android platform
-        run: npx cap add android
+        run: cap add android
 
       - name: Build web assets
         run: npm run build
