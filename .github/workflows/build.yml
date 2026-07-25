@@ -56,7 +56,7 @@ jobs:
           android {
               signingConfigs {
                   release {
-                      storeFile file('../../../vitalk.keystore')
+                      storeFile file('../../vitalk.keystore')
                       storePassword 'vitalk123'
                       keyAlias 'vitalk'
                       keyPassword 'vitalk123'
