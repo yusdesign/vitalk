@@ -8,16 +8,17 @@
 </head>
 <body>
   <div id="app">
+    <!-- Header with settings gear -->
     <header>
       <h1>🧠 Vitalk</h1>
-      <span class="badge">FREE</span>
+      <button id="settings-btn" aria-label="Settings">⚙️</button>
     </header>
 
+    <!-- Main Stats (Sterile) -->
     <main>
       <section id="today">
-        <h2>Today</h2>
         <div class="stat-grid">
-          <div class="stat"><span class="value" id="words-today">—</span><label>Words</label></div>
+          <div class="stat"><span class="value" id="words-today">—</span><label>Today</label></div>
           <div class="stat"><span class="value" id="streak">—</span><label>Streak</label></div>
           <div class="stat"><span class="value" id="total">—</span><label>Total</label></div>
           <div class="stat"><span class="value" id="longest">—</span><label>Longest</label></div>
@@ -33,17 +34,39 @@
         <h2>📊 Word Lengths</h2>
         <div id="length-bars"></div>
       </section>
-
-      <section id="export">
-        <h2>💾 Backup</h2>
-        <button id="export-btn">Export JSON</button>
-        <button id="import-btn">Import JSON</button>
-      </section>
-
-      <footer>
-        <p>🔒 No internet • No tracking • Your words, your device</p>
-      </footer>
     </main>
+
+    <footer>
+      <p>🔒 No internet • No tracking</p>
+    </footer>
+  </div>
+
+  <!-- Settings Drawer (hidden by default) -->
+  <div id="settings-overlay" class="hidden">
+    <div id="settings-drawer">
+      <div class="drawer-header">
+        <h2>⚙️ Vitalk Preferences</h2>
+        <button id="close-settings" aria-label="Close settings">✕</button>
+      </div>
+      <div class="drawer-body">
+        <div class="pref-group">
+          <label for="wordlist-path">📁 Wordlist Source</label>
+          <p id="wordlist-path">Not loaded</p>
+          <button id="browse-wordlist">Browse</button>
+        </div>
+        <div class="pref-group">
+          <label>📊 Stats</label>
+          <p>Total words: <span id="pref-total">0</span></p>
+          <p>Unique words: <span id="pref-unique">0</span></p>
+          <p>Longest word: <span id="pref-longest">—</span></p>
+        </div>
+        <div class="pref-group">
+          <label>🔒 Privacy</label>
+          <p>No data leaves your device</p>
+          <p>No internet permission</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="main.js" type="module"></script>

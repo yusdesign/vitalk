@@ -9,13 +9,39 @@ const STATS = {
   milestones: { 100: false, 500: false, 1000: false, 5000: false, 10000: false }
 };
 
-// Called when app starts
+let currentWordlistPath = 'Not loaded';
+
+// --- UI Elements ---
+const settingsBtn = document.getElementById('settings-btn');
+const settingsOverlay = document.getElementById('settings-overlay');
+const closeSettingsBtn = document.getElementById('close-settings');
+const browseBtn = document.getElementById('browse-wordlist');
+const pathDisplay = document.getElementById('wordlist-path');
+const prefTotal = document.getElementById('pref-total');
+const prefUnique = document.getElementById('pref-unique');
+const prefLongest = document.getElementById('pref-longest');
+
+// --- Drawer Controls ---
+function openSettings() {
+  settingsOverlay.classList.remove('hidden');
+  updatePrefDisplay();
+}
+
+function closeSettings() {
+  settingsOverlay.classList.add('hidden');
+}
+
+settingsBtn.addEventListener('click', openSettings);
+closeSettingsBtn.addEventListener('click', closeSettings);
+settingsOverlay.addEventListener('click', (e) => {
+  if (e.target === settingsOverlay) closeSettings();
+});
+
+// --- Wordlist Loading ---
 async function loadWordlist() {
-  // 1. Check if we already have a saved URI
   const { value: savedUri } = await Preferences.get({ key: 'wordlist_uri' });
   
   if (savedUri) {
-    // Try to read using the saved URI
     try {
       const result = await Filesystem.readFile({
         path: savedUri,
@@ -23,19 +49,34 @@ async function loadWordlist() {
       });
       const text = new TextDecoder().decode(result.data);
       const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+      currentWordlistPath = savedUri;
+      pathDisplay.textContent = currentWordlistPath;
       processWords(words);
       return;
     } catch (e) {
-      console.warn('Saved URI failed, re-prompting:', e);
+      console.warn('Saved URI failed:', e);
     }
   }
 
-  // 2. No valid URI — prompt user to pick the file (silent, automatic)
+  try {
+    const result = await Filesystem.readFile({
+      path: 'Android/data/com.lexica.app/files/wordlist_user.txt',
+      directory: Directory.ExternalStorage
+    });
+    const text = new TextDecoder().decode(result.data);
+    const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+    currentWordlistPath = 'Android/data/com.lexica.app/files/wordlist_user.txt';
+    pathDisplay.textContent = currentWordlistPath;
+    processWords(words);
+    return;
+  } catch (e) {
+    console.warn('Direct access failed:', e);
+  }
+
   promptUserToPickFile();
 }
 
 function promptUserToPickFile() {
-  // Create hidden file input
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.txt';
@@ -50,22 +91,25 @@ function promptUserToPickFile() {
     reader.onload = async (e) => {
       const text = e.target.result;
       const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+      currentWordlistPath = file.name;
+      pathDisplay.textContent = currentWordlistPath;
+      await Preferences.set({ key: 'wordlist_uri', value: file.name });
       processWords(words);
-      
-      // Save the file URI for next time (using Capacitor Preferences)
-      // Note: We can't save the full URI easily with Filesystem, 
-      // so we'll save the file name and rely on the picker again.
-      // For now, we'll just remember that we loaded once.
-      await Preferences.set({ key: 'wordlist_loaded', value: 'true' });
       document.body.removeChild(input);
     };
     reader.readAsText(file);
   };
 
-  // Trigger the file picker automatically
   input.click();
 }
 
+// --- Browse Button in Drawer ---
+browseBtn.addEventListener('click', () => {
+  closeSettings();
+  setTimeout(promptUserToPickFile, 300);
+});
+
+// --- Process Words ---
 function processWords(words) {
   const unique = new Set(words);
   STATS.total = words.length;
@@ -81,8 +125,10 @@ function processWords(words) {
   });
 
   renderStats();
+  updatePrefDisplay();
 }
 
+// --- Render Main Stats ---
 function renderStats() {
   document.querySelector('#words-today').textContent = STATS.total || '0';
   document.querySelector('#streak').textContent = '—';
@@ -116,5 +162,13 @@ function renderStats() {
     });
 }
 
-// Start the app
+// --- Update Preferences Drawer ---
+function updatePrefDisplay() {
+  prefTotal.textContent = STATS.total || '0';
+  prefUnique.textContent = STATS.unique || '0';
+  prefLongest.textContent = STATS.longest || '—';
+  pathDisplay.textContent = currentWordlistPath || 'Not loaded';
+}
+
+// --- Start ---
 loadWordlist();

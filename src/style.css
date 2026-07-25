@@ -151,6 +151,126 @@ footer {
   text-align: center;
 }
 
+/* Settings Gear */
+#settings-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  padding: 0.4rem;
+}
+#settings-btn:hover {
+  opacity: 1;
+}
+
+/* Settings Overlay & Drawer */
+#settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  transition: opacity 0.3s ease;
+}
+
+#settings-overlay.hidden {
+  display: none;
+}
+
+#settings-drawer {
+  background: #0b0e14;
+  width: 100%;
+  max-width: 420px;
+  padding: 1.8rem;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #1e2630;
+  overflow-y: auto;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e2630;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.drawer-header h2 {
+  font-weight: 400;
+  opacity: 0.8;
+  margin: 0;
+}
+
+#close-settings {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: #e0e4ec;
+  cursor: pointer;
+  opacity: 0.6;
+  padding: 0.2rem 0.6rem;
+}
+#close-settings:hover {
+  opacity: 1;
+}
+
+.drawer-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.pref-group {
+  background: #141b24;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+}
+.pref-group label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.5;
+  margin-bottom: 0.4rem;
+}
+.pref-group p {
+  margin: 0.2rem 0;
+  font-size: 1rem;
+  word-break: break-all;
+}
+.pref-group button {
+  margin-top: 0.6rem;
+  background: #1e2630;
+  border: none;
+  color: #e0e4ec;
+  padding: 0.4rem 1.2rem;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.pref-group button:hover {
+  background: #2a3543;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  #settings-drawer {
+    max-width: 100%;
+    padding: 1.2rem;
+  }
+}
+
 /* Landscape-first: 2-column above 900px */
 @media (min-width: 900px) {
   main {
