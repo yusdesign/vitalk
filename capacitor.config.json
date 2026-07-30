@@ -6,7 +6,8 @@
   "android": {
     "allowMixedContent": true,
     "minSdkVersion": 26,
-    "targetSdkVersion": 35
+    "targetSdkVersion": 35,
+    "icon": "src/icon.svg"
   },
   "server": {
     "androidScheme": "https"

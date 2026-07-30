@@ -57,6 +57,8 @@ function openSettings() {
     settingsOverlay.classList.remove('hidden');
     updatePrefDisplay();
     checkLexicaInstalled();
+  } else {
+    addDebugLog('settingsOverlay not found!', 'error');
   }
 }
 
@@ -67,20 +69,41 @@ function closeSettings() {
   }
 }
 
+// --- Test button for debugging ---
+// Add a hidden test button to the page if settings button doesn't work
+function addTestButton() {
+  const testBtn = document.createElement('button');
+  testBtn.textContent = '🔧 Open Settings (Test)';
+  testBtn.style.cssText = 'position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:9999; background:#1e3a3a; color:#7ae0c0; padding:0.8rem 2rem; border:none; border-radius:40px; font-size:1rem; cursor:pointer;';
+  testBtn.addEventListener('click', openSettings);
+  document.body.appendChild(testBtn);
+  addDebugLog('Test button added to page', 'info');
+}
+
+// --- Setup Event Listeners ---
 if (settingsBtn) {
   settingsBtn.addEventListener('click', openSettings);
+  addDebugLog('Settings button found and bound', 'ok');
 } else {
   addDebugLog('settingsBtn not found!', 'error');
+  // Add test button as fallback
+  setTimeout(addTestButton, 1000);
 }
 
 if (closeSettingsBtn) {
   closeSettingsBtn.addEventListener('click', closeSettings);
+  addDebugLog('Close button found and bound', 'ok');
+} else {
+  addDebugLog('closeSettingsBtn not found!', 'error');
 }
 
 if (settingsOverlay) {
   settingsOverlay.addEventListener('click', (e) => {
     if (e.target === settingsOverlay) closeSettings();
   });
+  addDebugLog('Settings overlay found', 'ok');
+} else {
+  addDebugLog('settingsOverlay not found!', 'error');
 }
 
 // --- Lexica Detection ---
@@ -235,6 +258,8 @@ if (browseBtn) {
     closeSettings();
     setTimeout(promptUserToPickFile, 300);
   });
+} else {
+  addDebugLog('browseBtn not found!', 'error');
 }
 
 // --- Check Lexica Button ---
@@ -243,6 +268,8 @@ if (checkLexicaBtn) {
     addDebugLog('Manual Lexica check', 'info');
     checkLexicaInstalled();
   });
+} else {
+  addDebugLog('checkLexicaBtn not found!', 'error');
 }
 
 // --- Clear Debug ---
@@ -252,6 +279,8 @@ if (clearDebugBtn) {
     renderDebugLogs();
     addDebugLog('Debug log cleared', 'info');
   });
+} else {
+  addDebugLog('clearDebugBtn not found!', 'error');
 }
 
 // --- Process Words ---
@@ -341,3 +370,11 @@ function updatePrefDisplay() {
 addDebugLog('Initializing Vitalk...', 'info');
 loadWordlist();
 addDebugLog('Ready', 'ok');
+
+// --- Add test button after 2 seconds if no stats appear ---
+setTimeout(() => {
+  if (STATS.total === 0) {
+    addDebugLog('No stats loaded after 2s - adding test button', 'warn');
+    addTestButton();
+  }
+}, 2000);

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#0b0e14"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#6ab0e6" stroke-width="20"/>
+  <text x="256" y="290" font-family="Arial, sans-serif" font-size="160" font-weight="bold" fill="#b8e6ff" text-anchor="middle">🌱</text>
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="40" font-weight="300" fill="#7ae0c0" text-anchor="middle" letter-spacing="8">VITALK</text>
+</svg>
