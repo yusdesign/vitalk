@@ -162,15 +162,15 @@ async function checkLexicaInstalled() {
   }
 }
 
-// --- Wordlist Loading ---
+// --- Wordlist Loading (File Picker Only) ---
 async function loadWordlist() {
-  addDebugLog('Loading wordlist...', 'info');
+  addDebugLog('Checking for saved wordlist...', 'info');
   
-  // Try saved URI
+  // 1. Try to load from saved URI
   try {
     const { value: savedUri } = await Preferences.get({ key: 'wordlist_uri' });
     if (savedUri) {
-      addDebugLog(`Saved URI: ${savedUri}`, 'info');
+      addDebugLog(`Saved URI found: ${savedUri}`, 'info');
       try {
         const result = await Filesystem.readFile({
           path: savedUri,
@@ -178,44 +178,31 @@ async function loadWordlist() {
         });
         const text = new TextDecoder().decode(result.data);
         const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
-        addDebugLog(`Loaded ${words.length} words from saved URI`, 'ok');
-        currentWordlistPath = savedUri;
-        if (pathDisplay) pathDisplay.textContent = currentWordlistPath;
-        processWords(words);
-        return;
+        if (words.length > 0) {
+          addDebugLog(`Loaded ${words.length} words from saved URI`, 'ok');
+          currentWordlistPath = savedUri;
+          if (pathDisplay) pathDisplay.textContent = currentWordlistPath;
+          updateWordlistStatus(`✅ Loaded: ${savedUri} (${words.length} words)`);
+          processWords(words);
+          return;
+        }
       } catch (e) {
         addDebugLog(`Saved URI failed: ${e.message}`, 'warn');
+        await Preferences.remove({ key: 'wordlist_uri' });
       }
     }
   } catch (e) {
     addDebugLog(`Preferences error: ${e.message}`, 'warn');
   }
 
-  // Try direct access
-  try {
-    addDebugLog('Trying direct access...', 'info');
-    const result = await Filesystem.readFile({
-      path: 'Android/data/com.lexica.app/files/wordlist_user.txt',
-      directory: Directory.ExternalStorage
-    });
-    const text = new TextDecoder().decode(result.data);
-    const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
-    addDebugLog(`Loaded ${words.length} words from direct access`, 'ok');
-    currentWordlistPath = 'Android/data/com.lexica.app/files/wordlist_user.txt';
-    if (pathDisplay) pathDisplay.textContent = currentWordlistPath;
-    processWords(words);
-    return;
-  } catch (e) {
-    addDebugLog(`Direct access failed: ${e.message}`, 'warn');
-  }
-
-  // Fallback: prompt user to pick the file
-  addDebugLog('Falling back to file picker', 'info');
+  // 2. No valid wordlist — prompt user to pick one
+  addDebugLog('No valid wordlist found. Prompting user to select file.', 'info');
+  updateWordlistStatus('⚠️ Please select your Lexica wordlist file');
   promptUserToPickFile();
 }
 
 function promptUserToPickFile() {
-  addDebugLog('Creating file picker...', 'info');
+  addDebugLog('Opening file picker...', 'info');
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.txt';
@@ -225,30 +212,54 @@ function promptUserToPickFile() {
   input.onchange = async (event) => {
     const file = event.target.files[0];
     if (!file) {
-      addDebugLog('No file selected', 'warn');
+      addDebugLog('File selection cancelled', 'warn');
+      updateWordlistStatus('⚠️ No file selected. Tap "Browse" to try again.');
       return;
     }
+    
     addDebugLog(`File selected: ${file.name}`, 'ok');
+    updateWordlistStatus(`📂 Loading: ${file.name}...`);
+    
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const text = e.target.result;
-      const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
-      addDebugLog(`Loaded ${words.length} words from picker`, 'ok');
-      currentWordlistPath = file.name;
-      if (pathDisplay) pathDisplay.textContent = currentWordlistPath;
       try {
+        const text = e.target.result;
+        const words = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+        
+        if (words.length === 0) {
+          addDebugLog('File is empty or invalid', 'error');
+          updateWordlistStatus('❌ File is empty. Please select your Lexica wordlist.');
+          return;
+        }
+        
+        addDebugLog(`Loaded ${words.length} words from picker`, 'ok');
+        currentWordlistPath = file.name;
+        if (pathDisplay) pathDisplay.textContent = currentWordlistPath;
+        updateWordlistStatus(`✅ Loaded: ${file.name} (${words.length} words)`);
+        
+        // Save the file name (we can't save the full path due to SAF restrictions)
         await Preferences.set({ key: 'wordlist_uri', value: file.name });
-        addDebugLog('Saved URI to preferences', 'ok');
+        addDebugLog('Saved file name to preferences', 'ok');
+        
+        processWords(words);
       } catch (err) {
-        addDebugLog(`Failed to save preferences: ${err.message}`, 'error');
+        addDebugLog(`Error reading file: ${err.message}`, 'error');
+        updateWordlistStatus('❌ Error reading file. Please try again.');
+      } finally {
+        document.body.removeChild(input);
       }
-      processWords(words);
-      document.body.removeChild(input);
     };
     reader.readAsText(file);
   };
 
+  // Trigger the file picker
   input.click();
+}
+
+// --- Update wordlist status on main screen ---
+function updateWordlistStatus(message) {
+  const statusEl = document.getElementById('wordlist-status');
+  if (statusEl) statusEl.textContent = message;
 }
 
 // --- Browse Button ---
