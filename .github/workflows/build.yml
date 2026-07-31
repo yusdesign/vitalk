@@ -11,7 +11,7 @@ env:
   JDK_VERSION: 21
 
 jobs:
-  build-free:
+  build-android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -81,5 +81,24 @@ jobs:
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: Vitalk-Free-Signed
+          name: Vitalk-Android-Signed
           path: android/app/build/outputs/apk/release/*.apk
+
+  build-web:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Setup Node
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{ env.NODE_VERSION }}
+        - name: Build Web
+          run: |
+            cd web
+            npm install
+            npm run build
+        - name: Upload Web Build
+          uses: actions/upload-artifact@v4
+          with:
+            name: vitalk-web
+            path: dist/web

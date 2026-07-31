@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌱 Vitalk — Web Companion</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>🌱 Vitalk</h1>
+      <span class="badge">web companion</span>
+    </header>
+
+    <div id="status">🔍 Detecting Lexica...</div>
+
+    <main id="stats-container" class="hidden">
+      <div class="stat-grid">
+        <div class="stat"><span class="value" id="words-today">0</span><label>Found</label></div>
+        <div class="stat"><span class="value" id="streak">—</span><label>Streak</label></div>
+        <div class="stat"><span class="value" id="total">0</span><label>Unique</label></div>
+        <div class="stat"><span class="value" id="longest">—</span><label>Longest</label></div>
+      </div>
+
+      <h2>🏆 Milestones</h2>
+      <ul id="milestone-list"></ul>
+
+      <h2>📊 Word Lengths</h2>
+      <div id="length-bars"></div>
+    </main>
+
+    <footer>
+      🔒 No data leaves your browser • Your words, your device
+    </footer>
+  </div>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>

@@ -1,1 +1,1 @@
-# vitalk
+# vitalk *is Lexica companion* 🌱

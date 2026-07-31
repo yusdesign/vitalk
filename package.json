@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:web": "vite build --config web/vite.config.js",
     "preview": "vite preview",
     "cap:add": "cap add android",
     "cap:sync": "cap sync android"
