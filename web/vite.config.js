@@ -1,6 +1,4 @@
 import { defineConfig } from 'vite';
-import { copyFileSync } from 'fs';
-import path from 'path';
 
 export default defineConfig({
   root: 'web',
@@ -13,13 +11,5 @@ export default defineConfig({
   },
   server: {
     port: 3001 // Different port to avoid conflict
-  },
-  plugins: [
-    {
-      name: 'copy-nojekyll',
-      closeBundle() {
-        copyFileSync('web/public/.nojekyll', '../dist/web/.nojekyll');
-      }
-    }
-  ]
+  }
 });
