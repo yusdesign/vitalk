@@ -1,4 +1,6 @@
 import { defineConfig } from 'vite';
+import { copyFileSync } from 'fs';
+import path from 'path';
 
 export default defineConfig({
   root: 'web',
