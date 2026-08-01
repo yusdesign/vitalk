@@ -1,0 +1,54 @@
+# .github/workflows/deploy-web.yml
+name: Deploy Vitalk Web to GitHub Pages
+
+on:
+  push:
+    branches: ["main"] # Runs on pushes to the main branch
+  workflow_dispatch:  # Allows you to run it manually from the Actions tab
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm install
+      - name: Build web app
+        # This command runs from the root and uses your root vite.config
+        run: npm run build:web
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        # This action expects the built files in a specific folder
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist/web' # This is where your build outputs the web files
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
