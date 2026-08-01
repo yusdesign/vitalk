@@ -33,8 +33,6 @@ jobs:
       - name: Build web app
         # This command runs from the root and uses your root vite.config
         run: npm run build:web
-      - name: Add .nojekyll
-        run: touch dist/web/.nojekyll
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
@@ -42,6 +40,8 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'dist/web' # This is where your build outputs the web files
+      - name: Add .nojekyll
+        run: touch dist/web/.nojekyll
 
   # Deployment job
   deploy:
